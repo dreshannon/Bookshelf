@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bookshelf Commit — Options</title>
+    <link rel="stylesheet" href="popup.css" />
+    <style>
+      body {
+        width: 520px;
+        padding: 20px;
+      }
+
+      body::after {
+        content: '';
+      }
+
+      h1 {
+        font-size: 18px;
+      }
+
+      p.blurb {
+        font-size: 13px;
+        color: #5a4a30;
+        margin: 0 0 16px;
+        line-height: 1.45;
+      }
+
+      form {
+        padding: 0;
+      }
+
+      .token-row {
+        position: relative;
+      }
+
+      .token-row button.reveal {
+        position: absolute;
+        right: 4px;
+        top: 22px;
+        background: transparent;
+        color: #7a6a52;
+        border: none;
+        padding: 4px 8px;
+        font-size: 11px;
+        cursor: pointer;
+      }
+
+      ol {
+        font-size: 12px;
+        color: #5a4a30;
+        padding-left: 20px;
+      }
+
+      ol li {
+        margin: 4px 0;
+      }
+
+      .scopes {
+        background: rgba(0, 0, 0, 0.04);
+        padding: 10px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        margin: 8px 0 14px;
+      }
+
+      .scopes code {
+        background: rgba(0, 0, 0, 0.06);
+        padding: 1px 4px;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Bookshelf Commit — Options</h1>
+    <p class="blurb">
+      Configure which repo to commit to and the personal access token the
+      extension uses. The token is stored in the browser's synced storage
+      and never leaves your machine except when talking to
+      <code>api.github.com</code>.
+    </p>
+
+    <form id="form">
+      <div class="row">
+        <label>
+          <span>Owner</span>
+          <input id="owner" required />
+        </label>
+        <label>
+          <span>Repo</span>
+          <input id="repo" required />
+        </label>
+      </div>
+
+      <div class="row">
+        <label>
+          <span>Branch</span>
+          <input id="branch" required />
+        </label>
+        <label>
+          <span>File path</span>
+          <input id="path" required />
+        </label>
+      </div>
+
+      <div class="token-row">
+        <label>
+          <span>Personal access token</span>
+          <input id="token" type="password" placeholder="github_pat_…" autocomplete="off" />
+        </label>
+        <button type="button" class="reveal" id="reveal">Show</button>
+      </div>
+
+      <div class="scopes">
+        <strong>Recommended PAT setup:</strong> fine-grained token, scoped to
+        just this repo, with <code>Contents: Read and write</code> permission.
+        <ol>
+          <li>Open <a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener">GitHub → Settings → Developer settings → Fine-grained tokens</a>.</li>
+          <li>New token, give it a recognisable name.</li>
+          <li>Repository access → Only select repositories → pick your Bookshelf repo.</li>
+          <li>Permissions → Repository permissions → Contents: Read and write.</li>
+          <li>Copy the token and paste it above.</li>
+        </ol>
+      </div>
+
+      <div id="status" class="status hidden"></div>
+
+      <div class="actions">
+        <button type="button" id="test" class="ghost">Test connection</button>
+        <button type="submit">Save</button>
+      </div>
+    </form>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

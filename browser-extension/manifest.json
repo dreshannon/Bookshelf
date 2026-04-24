@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Bookshelf Commit",
+  "description": "Scrape a StoryGraph book page and commit it to your Bookshelf repo.",
+  "version": "0.1.0",
+  "action": {
+    "default_title": "Add this book to Bookshelf",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "service_worker.js",
+    "type": "module"
+  },
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": [
+    "https://app.thestorygraph.com/*",
+    "https://thestorygraph.com/*",
+    "https://api.github.com/*"
+  ]
+}

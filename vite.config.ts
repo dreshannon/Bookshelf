@@ -6,7 +6,10 @@ import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  // On GitHub Pages the site is served from https://<user>.github.io/Bookshelf/,
+  // so production builds need the subpath. Dev server still serves from /.
+  base: command === 'build' ? '/Bookshelf/' : '/',
   plugins: [vue()],
   resolve: {
     alias: {
@@ -17,4 +20,4 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
   },
-})
+}))

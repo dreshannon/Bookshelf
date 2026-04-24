@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Add to Bookshelf</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Add to Bookshelf</h1>
+      <span id="repo-chip" class="chip"></span>
+    </header>
+
+    <div id="loading" class="state">Scraping page…</div>
+
+    <div id="unsupported" class="state hidden">
+      <p>This page doesn't look like a StoryGraph book page.</p>
+      <p class="hint">Navigate to a book on <code>app.thestorygraph.com/books/&lt;id&gt;</code>, then click the icon again.</p>
+    </div>
+
+    <div id="not-configured" class="state hidden">
+      <p>No GitHub token saved yet.</p>
+      <button id="open-options" class="secondary">Open options</button>
+    </div>
+
+    <form id="form" class="hidden">
+      <div class="cover-wrap">
+        <img id="cover" alt="" />
+        <div id="cover-fallback" class="cover-fallback">No cover</div>
+      </div>
+
+      <label>
+        <span>Title</span>
+        <input id="title" name="title" required />
+      </label>
+
+      <label>
+        <span>Author</span>
+        <input id="author" name="author" required />
+      </label>
+
+      <div class="row">
+        <label>
+          <span>ISBN</span>
+          <input id="isbn" name="isbn" inputmode="numeric" />
+        </label>
+        <label>
+          <span>Year</span>
+          <input id="year" name="year" inputmode="numeric" maxlength="4" />
+        </label>
+      </div>
+
+      <label>
+        <span>Cover URL</span>
+        <input id="coverUrl" name="coverUrl" type="url" />
+      </label>
+
+      <div id="status" class="status hidden"></div>
+
+      <div class="actions">
+        <button type="button" id="cancel" class="ghost">Cancel</button>
+        <button type="submit" id="commit">Commit</button>
+      </div>
+    </form>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
