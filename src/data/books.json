@@ -1,5 +1,14 @@
 [
   {
+    "title": "Ready Player One",
+    "author": "Ernest Cline",
+    "spineColor": "#5a1e1e",
+    "textColor": "#e8d4a8",
+    "accent": "#c89968",
+    "titleFont": "display",
+    "coverUrl": "https://cdn.thestorygraph.com/2wge37jddwaamzj9whyxa0ahip74"
+  },
+  {
     "title": "Atmosphere",
     "author": "Taylor Jenkins Reid",
     "spineColor": "#5a1e1e",
