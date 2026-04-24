@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Reading Shelf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://covers.openlibrary.org">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wood-dark: #3a2817;
+    --wood-mid: #5c3a1f;
+    --wood-light: #7a4e2a;
+    --wood-highlight: #9a6537;
+    --shadow-deep: rgba(0, 0, 0, 0.65);
+    --ambient: #1a0f08;
+    --paper-warm: #f4ead5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100vh;
+    font-family: 'EB Garamond', serif;
+    background:
+      radial-gradient(ellipse at 50% 30%, #2d1a0c 0%, #120802 70%, #000 100%);
+    color: var(--paper-warm);
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255, 200, 120, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(255, 160, 80, 0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.35;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    z-index: 2;
+  }
+
+  header {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    padding: 4rem 1.5rem 2rem;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    letter-spacing: 0.02em;
+    color: var(--paper-warm);
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+    margin-bottom: 0.4rem;
+  }
+
+  header h1 .amp { color: #c89968; }
+
+  header .sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: #a8896a;
+    opacity: 0.85;
+  }
+
+  .library {
+    position: relative;
+    z-index: 3;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem 2rem 5rem;
+  }
+
+  .shelf {
+    position: relative;
+    margin-bottom: 3.5rem;
+    perspective: 1200px;
+  }
+
+  .shelf-row {
+    position: relative;
+    height: 260px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 4px;
+    padding: 0 2.5rem;
+    background:
+      linear-gradient(180deg,
+        rgba(0,0,0,0.55) 0%,
+        rgba(0,0,0,0.25) 15%,
+        rgba(0,0,0,0.15) 85%,
+        rgba(0,0,0,0.5) 100%),
+      linear-gradient(90deg,
+        rgba(0,0,0,0.3) 0%,
+        rgba(0,0,0,0) 10%,
+        rgba(0,0,0,0) 90%,
+        rgba(0,0,0,0.3) 100%);
+    border-left: 6px solid var(--wood-dark);
+    border-right: 6px solid var(--wood-dark);
+  }
+
+  .shelf-plank {
+    position: relative;
+    height: 28px;
+    background:
+      linear-gradient(180deg,
+        var(--wood-highlight) 0%,
+        var(--wood-light) 15%,
+        var(--wood-mid) 55%,
+        var(--wood-dark) 100%);
+    border-top: 1px solid rgba(255, 200, 140, 0.15);
+    box-shadow:
+      0 2px 0 rgba(0,0,0,0.4),
+      0 6px 18px rgba(0,0,0,0.55),
+      inset 0 1px 0 rgba(255, 220, 170, 0.12);
+  }
+
+  .shelf-plank::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg,
+        transparent 0px,
+        rgba(0,0,0,0.05) 2px,
+        transparent 4px,
+        rgba(255,200,140,0.04) 8px,
+        transparent 14px,
+        rgba(0,0,0,0.08) 20px,
+        transparent 28px),
+      repeating-linear-gradient(90deg,
+        transparent 0px,
+        rgba(0,0,0,0.1) 60px,
+        transparent 62px,
+        transparent 140px,
+        rgba(0,0,0,0.08) 142px,
+        transparent 144px);
+    opacity: 0.6;
+  }
+
+  .shelf-row::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 60px;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 100%);
+    pointer-events: none;
+  }
+
+  /* ---- BOOKS ---- */
+  .book {
+    position: relative;
+    flex: 0 0 auto;
+    cursor: pointer;
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform-origin: bottom center;
+    animation: slot-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  @keyframes slot-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .book:hover {
+    transform: translateY(-14px) rotate(-1deg);
+    z-index: 10;
+  }
+
+  /* SPINE variant */
+  .book.spine {
+    width: 42px;
+    height: 220px;
+    border-radius: 2px 2px 1px 1px;
+    padding: 14px 4px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow:
+      inset 2px 0 3px rgba(255,255,255,0.08),
+      inset -2px 0 4px rgba(0,0,0,0.4),
+      inset 0 -3px 4px rgba(0,0,0,0.3),
+      3px 4px 10px rgba(0,0,0,0.5);
+    background-image:
+      linear-gradient(90deg,
+        rgba(0,0,0,0.35) 0%,
+        rgba(255,255,255,0.06) 15%,
+        rgba(255,255,255,0.02) 50%,
+        rgba(0,0,0,0.25) 90%,
+        rgba(0,0,0,0.45) 100%);
+  }
+
+  .book.spine .spine-title {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--spine-font, 'Cormorant Garamond', serif);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-align: center;
+    color: var(--spine-text, #f4ead5);
+    text-shadow: 0 1px 0 rgba(0,0,0,0.4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 160px;
+    flex: 1;
+  }
+
+  .book.spine .spine-author {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: 'EB Garamond', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    color: var(--spine-text, #f4ead5);
+    opacity: 0.75;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .book.spine::before,
+  .book.spine::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 4px;
+    background: rgba(0,0,0,0.25);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+  }
+  .book.spine::before { top: 22px; }
+  .book.spine::after { bottom: 30px; }
+
+  /* COVER variant */
+  .book.cover {
+    width: 145px;
+    height: 220px;
+    border-radius: 2px 4px 4px 2px;
+    overflow: hidden;
+    box-shadow:
+      inset 4px 0 6px rgba(0,0,0,0.3),
+      inset -1px 0 2px rgba(255,255,255,0.1),
+      4px 6px 14px rgba(0,0,0,0.55);
+    position: relative;
+  }
+
+  /* Spine-edge illusion on the left side of cover-facing books */
+  .book.cover::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 6px;
+    background: linear-gradient(90deg, rgba(0,0,0,0.5), rgba(0,0,0,0.2) 50%, transparent);
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* Subtle gloss across covers */
+  .book.cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(100deg,
+      rgba(0,0,0,0.2) 0%,
+      rgba(255,255,255,0.08) 15%,
+      rgba(255,255,255,0) 50%,
+      rgba(0,0,0,0.15) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Image-backed cover */
+  .book.cover .cover-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .book.cover .cover-image.loaded {
+    opacity: 1;
+  }
+
+  /* CSS-drawn cover (fallback) */
+  .book.cover .cover-inner {
+    position: absolute;
+    inset: 0;
+    padding: 1.1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    z-index: 1;
+  }
+
+  .book.cover .cover-title {
+    font-family: var(--cover-font, 'Playfair Display', serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--cover-text, #f4ead5);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    margin-top: 0.4rem;
+  }
+
+  .book.cover .cover-title.italic {
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .book.cover .cover-author {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--cover-text, #f4ead5);
+    opacity: 0.85;
+  }
+
+  .book.cover .cover-ornament {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--cover-accent, #c89968);
+    align-self: center;
+    opacity: 0.85;
+    margin: 0.3rem 0;
+  }
+
+  /* Tooltip */
+  .book-tooltip {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    background: rgba(15, 8, 3, 0.95);
+    border: 1px solid rgba(200, 153, 104, 0.3);
+    padding: 0.6rem 0.9rem;
+    border-radius: 3px;
+    font-family: 'EB Garamond', serif;
+    font-size: 0.9rem;
+    color: var(--paper-warm);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 20;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+  }
+
+  .book-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: rgba(200, 153, 104, 0.3);
+  }
+
+  .book-tooltip em {
+    display: block;
+    color: #c89968;
+    font-style: italic;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+  }
+
+  .book:hover .book-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .shelf-row.rotating .book {
+    animation: fade-out 0.4s ease forwards;
+  }
+  @keyframes fade-out {
+    to { opacity: 0; transform: translateY(-6px); }
+  }
+
+  footer {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    padding: 2rem 1rem 3rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    color: #8a6f52;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  footer .count { color: #c89968; font-weight: 600; }
+
+  footer a.credit {
+    display: block;
+    margin-top: 0.8rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: #6a543a;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  footer a.credit:hover { color: #c89968; }
+
+  @media (max-width: 720px) {
+    .shelf-row { padding: 0 1rem; gap: 2px; height: 230px; }
+    .book.spine { width: 36px; height: 195px; }
+    .book.cover { width: 125px; height: 195px; }
+    .book.cover .cover-inner { padding: 0.9rem 0.8rem; }
+    .book.cover .cover-title { font-size: 0.95rem; }
+    header { padding: 2.5rem 1rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>A Life <span class="amp">&amp;</span> Its Margins</h1>
+  <div class="sub">A Rotating Library</div>
+</header>
+
+<main class="library" id="library"></main>
+
+<!-- Book data. books.js is generated from books.json; loading via <script>
+     lets this page work when opened directly from disk (file://). -->
+<script src="books.js"></script>
+
+<footer>
+  <span class="count" id="book-count">0</span> &nbsp;&middot;&nbsp; Volumes Read
+  <a class="credit" href="https://openlibrary.org" target="_blank" rel="noopener">Covers courtesy of Open Library</a>
+</footer>
+
+<script>
+/* ============================================================
+   YOUR BOOKS
+   Loaded at runtime from books.json, which is generated from
+   your StoryGraph export. Each entry may include:
+     - title, author        (required)
+     - coverUrl             (direct cover URL, e.g. from StoryGraph)
+     - isbn or olid         (for Open Library fallback lookup)
+     - spineColor, textColor, accent, titleFont  (spine styling)
+   ============================================================ */
+let BOOKS = [];
+
+/* ============================================================ */
+const BOOKS_PER_SHELF = 10;
+const NUM_SHELVES = 3;
+const ROTATION_MS = 6000;
+const CACHE_KEY = 'bookshelf-cover-cache-v1';
+
+/* ============================================================
+   OPEN LIBRARY COVER LOOKUP
+   ============================================================ */
+
+// Persistent session cache so we don't re-query on every rotation.
+const coverCache = (() => {
+  try {
+    const raw = sessionStorage.getItem(CACHE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+})();
+
+function saveCache() {
+  try { sessionStorage.setItem(CACHE_KEY, JSON.stringify(coverCache)); } catch {}
+}
+
+function cacheKey(book) {
+  return `${book.title.toLowerCase()}|${book.author.toLowerCase()}`;
+}
+
+// In-flight promise map so concurrent requests for the same book
+// share a single fetch.
+const pending = new Map();
+
+async function getCoverUrl(book) {
+  const key = cacheKey(book);
+  if (key in coverCache) return coverCache[key].coverUrl;
+  if (pending.has(key)) return pending.get(key);
+
+  const promise = (async () => {
+    // Direct cover URL wins (e.g. from StoryGraph export).
+    if (book.coverUrl) {
+      coverCache[key] = { coverUrl: book.coverUrl };
+      saveCache();
+      return book.coverUrl;
+    }
+    // Hard-coded ISBN or OLID: skip the search.
+    if (book.isbn) {
+      const url = `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(book.isbn)}-L.jpg`;
+      coverCache[key] = { coverUrl: url };
+      saveCache();
+      return url;
+    }
+    if (book.olid) {
+      const url = `https://covers.openlibrary.org/b/olid/${encodeURIComponent(book.olid)}-L.jpg`;
+      coverCache[key] = { coverUrl: url };
+      saveCache();
+      return url;
+    }
+
+    try {
+      const params = new URLSearchParams({
+        title: book.title,
+        author: book.author,
+        limit: '5',
+        fields: 'cover_i,title,author_name,edition_count'
+      });
+      const res = await fetch(`https://openlibrary.org/search.json?${params}`);
+      if (!res.ok) throw new Error(`search failed: ${res.status}`);
+      const data = await res.json();
+
+      // Pick first result that has a cover.
+      const match = (data.docs || []).find(d => d.cover_i);
+      if (match && match.cover_i) {
+        const url = `https://covers.openlibrary.org/b/id/${match.cover_i}-L.jpg`;
+        coverCache[key] = { coverUrl: url };
+        saveCache();
+        return url;
+      }
+    } catch (err) {
+      console.warn('Cover lookup failed for', book.title, err);
+    }
+
+    coverCache[key] = { coverUrl: null };
+    saveCache();
+    return null;
+  })();
+
+  pending.set(key, promise);
+  promise.finally(() => pending.delete(key));
+  return promise;
+}
+
+/* ============================================================
+   RENDERING
+   ============================================================ */
+
+const library = document.getElementById('library');
+const countEl = document.getElementById('book-count');
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickDisplayModes(count) {
+  const modes = new Array(count).fill('spine');
+  const coverCount = Math.max(1, Math.floor(count / 4));
+  const positions = new Set();
+  let guard = 0;
+  while (positions.size < coverCount && guard++ < 50) {
+    const p = Math.floor(Math.random() * count);
+    if (!positions.has(p) && !positions.has(p - 1) && !positions.has(p + 1)) {
+      positions.add(p);
+    }
+  }
+  positions.forEach(p => modes[p] = 'cover');
+  return modes;
+}
+
+function fontFor(key) {
+  switch (key) {
+    case 'display': return "'Playfair Display', serif";
+    case 'italic':  return "'Cormorant Garamond', serif";
+    case 'serif':
+    default:        return "'EB Garamond', serif";
+  }
+}
+
+function lastName(full) {
+  const parts = full.trim().split(/\s+/);
+  return parts[parts.length - 1];
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderBook(book, mode) {
+  const el = document.createElement('div');
+  el.className = `book ${mode}`;
+  el.style.setProperty('--spine-text', book.textColor || '#f4ead5');
+  el.style.setProperty('--cover-text', book.textColor || '#f4ead5');
+  el.style.setProperty('--cover-accent', book.accent || '#c89968');
+  el.style.setProperty('--spine-font', fontFor(book.titleFont));
+  el.style.setProperty('--cover-font', fontFor(book.titleFont));
+  el.style.backgroundColor = book.spineColor || '#5a1e1e';
+
+  if (mode === 'spine') {
+    el.innerHTML = `
+      <span class="spine-title">${escapeHtml(book.title)}</span>
+      <span class="spine-author">${escapeHtml(lastName(book.author))}</span>
+      <div class="book-tooltip">${escapeHtml(book.title)}<em>${escapeHtml(book.author)}</em></div>
+    `;
+  } else {
+    const titleClass = book.titleFont === 'italic' ? 'cover-title italic' : 'cover-title';
+    el.innerHTML = `
+      <img class="cover-image" alt="${escapeHtml(book.title)} cover" />
+      <div class="cover-inner">
+        <div class="${titleClass}">${escapeHtml(book.title)}</div>
+        <div class="cover-ornament">&#10040;</div>
+        <div class="cover-author">${escapeHtml(book.author)}</div>
+      </div>
+      <div class="book-tooltip">${escapeHtml(book.title)}<em>${escapeHtml(book.author)}</em></div>
+    `;
+
+    // Try to load a real cover. If it resolves, fade the image in over
+    // the CSS fallback. If it fails, the fallback stays visible.
+    const img = el.querySelector('.cover-image');
+    const inner = el.querySelector('.cover-inner');
+    getCoverUrl(book).then(url => {
+      if (!url || !img.isConnected) return;
+      img.addEventListener('load', () => {
+        // Open Library returns a tiny placeholder (1x1 or similar)
+        // when the ID exists but has no image. Detect and skip those.
+        if (img.naturalWidth < 20 || img.naturalHeight < 20) {
+          img.remove();
+          return;
+        }
+        img.classList.add('loaded');
+        if (inner) inner.style.display = 'none';
+      }, { once: true });
+      img.addEventListener('error', () => img.remove(), { once: true });
+      img.src = url;
+    });
+  }
+
+  const variance = (Math.random() * 8 - 2) | 0;
+  el.style.height = `${220 + variance}px`;
+
+  return el;
+}
+
+/* ============================================================
+   SHELF BUILDING + ROTATION
+   ============================================================ */
+
+const shelves = [];
+for (let i = 0; i < NUM_SHELVES; i++) {
+  const shelf = document.createElement('div');
+  shelf.className = 'shelf';
+  shelf.innerHTML = `
+    <div class="shelf-row" data-shelf="${i}"></div>
+    <div class="shelf-plank"></div>
+  `;
+  library.appendChild(shelf);
+  shelves.push(shelf.querySelector('.shelf-row'));
+}
+
+let pool = [];
+let poolIndex = 0;
+
+function nextBook() {
+  if (poolIndex >= pool.length) {
+    pool = shuffle(BOOKS);
+    poolIndex = 0;
+  }
+  return pool[poolIndex++];
+}
+
+function fillShelf(shelfEl) {
+  if (!BOOKS.length) return;
+  shelfEl.innerHTML = '';
+  const modes = pickDisplayModes(BOOKS_PER_SHELF);
+  modes.forEach((mode, idx) => {
+    const book = nextBook();
+    const el = renderBook(book, mode);
+    el.style.animationDelay = `${idx * 40}ms`;
+    shelfEl.appendChild(el);
+  });
+}
+
+function fillAllShelves() {
+  shelves.forEach(fillShelf);
+}
+
+function loadBooks() {
+  const data = window.BOOKS_DATA;
+  if (!Array.isArray(data) || !data.length) {
+    console.error('window.BOOKS_DATA missing or empty — is books.js loaded?');
+    countEl.textContent = '—';
+    library.insertAdjacentHTML('beforeend',
+      `<p style="text-align:center;color:#a8896a;padding:2rem;font-family:'Cormorant Garamond',serif;">
+         Could not load book data. Make sure <code>books.js</code> sits next to this file.
+       </p>`);
+    return;
+  }
+
+  BOOKS = data;
+  countEl.textContent = BOOKS.length;
+  pool = shuffle(BOOKS);
+  poolIndex = 0;
+  fillAllShelves();
+
+  // Rotate one shelf at a time.
+  let rotatingShelfIndex = 0;
+  setInterval(() => {
+    const shelfEl = shelves[rotatingShelfIndex];
+    shelfEl.classList.add('rotating');
+    setTimeout(() => {
+      fillShelf(shelfEl);
+      shelfEl.classList.remove('rotating');
+    }, 420);
+    rotatingShelfIndex = (rotatingShelfIndex + 1) % shelves.length;
+  }, ROTATION_MS);
+}
+
+loadBooks();
+</script>
+
+</body>
+</html>
