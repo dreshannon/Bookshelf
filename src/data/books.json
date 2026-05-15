@@ -1,5 +1,14 @@
 [
   {
+    "title": "Morning Star",
+    "author": "Pierce Brown",
+    "spineColor": "#6b5b3a",
+    "textColor": "#f4ead5",
+    "accent": "#d4b078",
+    "titleFont": "italic",
+    "coverUrl": "https://cdn.thestorygraph.com/tzn835lrl6qy4av8bt4p3g6xk5p9"
+  },
+  {
     "title": "Ready Player One",
     "author": "Ernest Cline",
     "spineColor": "#5a1e1e",
