@@ -1,5 +1,15 @@
 [
   {
+    "title": "A Parade of Horribles",
+    "author": "Matt Dinniman",
+    "spineColor": "#3a2a4a",
+    "textColor": "#d8c8e8",
+    "accent": "#a898c8",
+    "titleFont": "display",
+    "coverUrl": "https://cdn.thestorygraph.com/vhtxb84al8u5qe4m60gk4176jaf1",
+    "year": 2026
+  },
+  {
     "title": "Mark Of The Fool 10",
     "author": "J.M. Clarke",
     "spineColor": "#2f4a3a",
