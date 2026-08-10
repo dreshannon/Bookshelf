@@ -4,6 +4,9 @@ A rotating personal library — your StoryGraph reading list rendered as
 a 3D wooden shelf with spines and cover-facing books. Built with
 Vite + Vue 3 + TypeScript.
 
+## URL
+https://dreshannon.github.io/Bookshelf/
+
 ## Getting started
 
 ```bash
