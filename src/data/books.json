@@ -1,5 +1,15 @@
 [
   {
+    "title": "Animal Farm",
+    "author": "George Orwell",
+    "spineColor": "#4a2a2a",
+    "textColor": "#e8c8b8",
+    "accent": "#c88868",
+    "titleFont": "display",
+    "coverUrl": "https://cdn.thestorygraph.com/kr0rtf47qzpfndqz1v11iog7vxwa",
+    "year": 2026
+  },
+  {
     "title": "All These Worlds",
     "author": "Dennis E. Taylor",
     "spineColor": "#3a4a2a",
