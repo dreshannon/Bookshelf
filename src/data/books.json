@@ -1,5 +1,14 @@
 [
   {
+    "title": "The Adventures of Amina Al-Sirafi",
+    "author": "Shannon Chakraborty",
+    "spineColor": "#2a2a2a",
+    "textColor": "#c8c8c8",
+    "accent": "#888888",
+    "titleFont": "serif",
+    "coverUrl": "https://cdn.thestorygraph.com/8rgd9kgckzrkf9s863aocgvmqd7o"
+  },
+  {
     "title": "Animal Farm",
     "author": "George Orwell",
     "spineColor": "#4a2a2a",
