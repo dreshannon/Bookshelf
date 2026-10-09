@@ -1,5 +1,15 @@
 [
   {
+    "title": "Katabasis",
+    "author": "R.F. Kuang",
+    "spineColor": "#4a3a1e",
+    "textColor": "#e8d4a8",
+    "accent": "#d4a868",
+    "titleFont": "italic",
+    "coverUrl": "https://cdn.thestorygraph.com/1z94450zsvdzdgvoc818kaqxhvsf",
+    "year": 2025
+  },
+  {
     "title": "The Adventures of Amina Al-Sirafi",
     "author": "Shannon Chakraborty",
     "spineColor": "#2a2a2a",
